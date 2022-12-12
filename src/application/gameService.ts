@@ -1,12 +1,11 @@
-import { connextMySql } from '../dataaccess/connection'
-import { GameGateway } from '../dataaccess/gameGateway'
-import { SquareGateway } from '../dataaccess/squareGateway'
-import { TurnGateway } from '../dataaccess/turnGateway'
-import { DARK, INITIAL_BOARD } from './constants'
+import { connextMySql } from '../infrastructure/connection'
+import { firstTurn } from '../domain/turn/turn'
+import { TurnRepository } from '../domain//turn/turnRepository'
+import { GameRepository } from '../domain/game/gameRepository'
+import { Game } from '../domain/game/game'
 
-const gameGateway = new GameGateway()
-const turnGateway = new TurnGateway()
-const squareGateway = new SquareGateway()
+const turnRepository = new TurnRepository()
+const gameRepository = new GameRepository()
 
 export class GameService {
   async startNewGame() {
@@ -15,17 +14,12 @@ export class GameService {
 
     try {
       await conn.beginTransaction()
-      const gameRecord = await gameGateway.insert(conn, now)
+      const game = await gameRepository.save(conn, new Game(undefined, now))
+      if (!game.id) throw new Error('game.id does not exist')
 
-      const turnRecord = await turnGateway.insert(
-        conn,
-        gameRecord.id,
-        0,
-        DARK,
-        now
-      )
+      const turn = firstTurn(game.id, now)
 
-      await squareGateway.insertAll(conn, turnRecord.id, INITIAL_BOARD)
+      await turnRepository.save(conn, turn)
 
       await conn.commit()
     } catch (err: any) {

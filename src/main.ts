@@ -3,7 +3,6 @@ import morgan from 'morgan'
 import 'express-async-errors'
 import { gameRouter } from './presentation/gameRouter'
 import { turnRouter } from './presentation/turnRouter'
-import { PORT } from './application/constants'
 
 const app = express()
 app.use(morgan('dev'))
@@ -14,8 +13,8 @@ app.use(turnRouter)
 
 app.use(errorHandler)
 
-app.listen(PORT, () => {
-  console.log(`Reversi application started: http://localhost:${PORT}`)
+app.listen(3000, () => {
+  console.log(`Reversi application started: http://localhost:3000`)
 })
 
 function errorHandler(
