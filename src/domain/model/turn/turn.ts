@@ -1,3 +1,4 @@
+import { DomainError } from '../../error/domainError'
 import { Board, initialBoard } from './board'
 import { Disc } from './disc'
 import { Move } from './move'
@@ -34,7 +35,11 @@ export class Turn {
 
   placeNext(disc: number, point: Point): Turn {
     // 打とうとした石が、次の石でない場合、おくことはできない
-    if (disc !== this._nextDisc) throw new Error('Invalid Disc')
+    if (disc !== this._nextDisc)
+      throw new DomainError(
+        'SelectedDiscIsNotNextDisc',
+        'Selected disc is not next disc'
+      )
 
     const move = new Move(disc, point)
     console.log(`move: ${JSON.stringify(move)}`)

@@ -1,7 +1,8 @@
-import { connextMySql } from '../infrastructure/connection'
-import { GameRepository } from '../domain/game/gameRepository'
-import { Point } from '../domain/turn/point'
-import { TurnRepository } from '../domain/turn/turnRepository'
+import { connextMySql } from '../../infrastructure/connection'
+import { GameRepository } from '../../domain/model/game/gameRepository'
+import { Point } from '../../domain/model/turn/point'
+import { TurnRepository } from '../../domain/model/turn/turnRepository'
+import { ApplicationError } from '../error/applicationError'
 
 const turnRepository = new TurnRepository()
 const gameRepository = new GameRepository()
@@ -36,7 +37,11 @@ export class TurnService {
 
     try {
       const game = await gameRepository.findLatest(conn)
-      if (!game) throw new Error('game does not exist')
+      if (!game)
+        throw new ApplicationError(
+          'LatestGameNotFound',
+          'Lateset game is not found'
+        )
       if (!game.id) throw new Error('game.id does not exist')
 
       const turn = await turnRepository.findByGameIdAndTurnCount(
@@ -69,7 +74,11 @@ export class TurnService {
 
     try {
       const game = await gameRepository.findLatest(conn)
-      if (!game) throw new Error('game does not exist')
+      if (!game)
+        throw new ApplicationError(
+          'LatestGameNotFound',
+          'Lateset game is not found'
+        )
       if (!game.id) throw new Error('game.id does not exist')
 
       const previousTurnCount = turnCount - 1
