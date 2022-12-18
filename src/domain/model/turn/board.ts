@@ -78,6 +78,30 @@ export class Board {
     return flipPoints
   }
 
+  existValidMove(disc: Disc): boolean {
+    for (let y = 0; y < this._discs.length; y++) {
+      const line = this._discs[y]
+      for (let x = 0; x < line.length; x++) {
+        const discOnBoard = line[x]
+
+        // 空ではない点は無視
+        if (discOnBoard !== Disc.Empty) {
+          continue
+        }
+
+        const move = new Move(disc, new Point(x, y))
+        const flipPoints = this.listFlipPoints(move)
+
+        // ひっくり返せる点がある場合、置ける場所がある
+        if (flipPoints.length !== 0) {
+          return true
+        }
+      }
+    }
+
+    return false
+  }
+
   place(move: Move): Board {
     // 空のマス目でない場合、おくことはできない
     if (this._discs[move.point.y][move.point.x] !== Disc.Empty)
@@ -85,7 +109,6 @@ export class Board {
         'SelectedPointIsNotEmpty',
         'Selected point is not empty'
       )
-    console.log('--------------')
 
     // ひっくり返せる点をリストアップ
     const flipPoints = this.listFlipPoints(move)
@@ -110,6 +133,14 @@ export class Board {
     })
 
     return new Board(newDiscs)
+  }
+
+  count(disc: Disc): number {
+    return this._discs
+      .map((line) => {
+        return line.filter((discOnBoard) => discOnBoard === disc).length
+      })
+      .reduce((v1, v2) => v1 + v2, 0)
   }
 }
 

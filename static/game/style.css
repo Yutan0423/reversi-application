@@ -1,0 +1,50 @@
+body {
+  text-align: center;
+}
+
+.warning-message-area {
+  height: 30px;
+}
+
+.warning-message {
+  width: 600px;
+  height: 30px;
+  margin: auto;
+  background-color: red;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 15px;
+}
+
+.board {
+  width: 480px;
+  margin: auto;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(8, 60px);
+  border: solid;
+  border-width: 1px 0 0 1px;
+}
+
+.square {
+  width: 60px;
+  height: 60px;
+  border: solid;
+  border-width: 0 1px 1px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stone {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+}
+.dark {
+  background-color: #000;
+}
+.light {
+  background-color: #fff;
+  border: solid 1px;
+}
