@@ -1,84 +1,31 @@
-const EMPTY = 0
-const DARK = 1
-const LIGHT = 2
+const gamesTableBodyElement = document.getElementById('games-table-body')
 
-const INITIAL_BOARD = [
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, DARK, LIGHT, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, LIGHT, DARK, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-]
-
-const boardElement = document.getElementById('board')
-
-async function showBoard(turnCount) {
-  const response = await fetch(`/api/games/latest/turns/${turnCount}`)
+async function showGames() {
+  const response = await fetch('/api/games')
   const responseBody = await response.json()
-  const nextDisc = responseBody.nextDisc
-  const board = responseBody.board
+  const games = responseBody.games
 
-  while (boardElement?.firstChild) {
-    boardElement.removeChild(boardElement.firstChild)
+  while (gamesTableBodyElement.childElement) {
+    gamesTableBodyElement.removeChild(gamesTableBodyElement.firstChild)
   }
 
-  board.forEach((line, y) => {
-    line.forEach((square, x) => {
-      // <div class="square">
-      const squareElement = document.createElement('div')
-      squareElement.className = 'square'
+  games.forEach((game) => {
+    const trElement = document.createElement('tr')
 
-      if (square !== EMPTY) {
-        // <div class="stone dark">
-        const stoneElement = document.createElement('div')
-        const color = square === DARK ? 'dark' : 'light'
-        stoneElement.className = `stone ${color}`
+    const appendTdElement = (innerText) => {
+      const tdElement = document.createElement('td')
+      tdElement.innerText = innerText
+      trElement.appendChild(tdElement)
+    }
 
-        squareElement.appendChild(stoneElement)
-      } else {
-        squareElement.addEventListener('click', async () => {
-          const nextTurnCount = turnCount + 1
-          await registerTurn(nextTurnCount, nextDisc, x, y)
-          await showBoard(nextTurnCount)
-        })
-      }
+    appendTdElement(game.darkMoveCount)
+    appendTdElement(game.lightMoveCount)
+    appendTdElement(game.winnerDisc)
+    appendTdElement(game.startedAt)
+    appendTdElement(game.endAt)
 
-      boardElement.appendChild(squareElement)
-    })
+    gamesTableBodyElement.appendChild(trElement)
   })
 }
 
-async function registerGame() {
-  await fetch('/api/games', {
-    method: 'POST',
-  })
-}
-
-async function registerTurn(turnCount, disc, x, y) {
-  const requestBody = {
-    turnCount,
-    move: {
-      disc,
-      x,
-      y,
-    },
-  }
-
-  await fetch('/api/games/latest/turns', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  })
-}
-
-async function main() {
-  await registerGame()
-  await showBoard(0)
-}
-
-main()
+showGames()

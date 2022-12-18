@@ -23,12 +23,21 @@ paths:
                         id:
                           type: integer
                           example: 1
+                        moveDarkCount:
+                          type: integer
+                          example: 1
+                        moveLightCount:
+                          type: integer
+                          example: 1
                         winnerDisc:
                           type: integer
                           example: 2
                         startedAt:
                           type: string
-                          example: "2022-07-21T23:54:23"
+                          example: '2022-07-21T23:54:23'
+                        endAt:
+                          type: string
+                          example: '2022-07-21T23:54:23'
 
     post:
       responses:
@@ -65,7 +74,7 @@ paths:
                         [0, 0, 0, 2, 1, 0, 0, 0],
                         [0, 0, 0, 0, 0, 0, 0, 0],
                         [0, 0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0, 0]
+                        [0, 0, 0, 0, 0, 0, 0, 0],
                       ]
                   nextDisc:
                     type: integer
